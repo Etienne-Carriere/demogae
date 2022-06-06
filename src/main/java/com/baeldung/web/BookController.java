@@ -21,7 +21,7 @@ import com.baeldung.web.exception.BookNotFoundException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/books")
+@RequestMapping("/api/v2/books")
 public class BookController {
 
     @Autowired
