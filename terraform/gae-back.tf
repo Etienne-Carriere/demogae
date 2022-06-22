@@ -1,7 +1,6 @@
-resource "google_app_engine_flexible_app_version" "myapp_v1" {
-  count = length(var.asso_list)
+resource "google_app_engine_flexible_app_version" "back" {
   version_id = "v1"
-  service    = element(var.asso_list, count.index)
+  service    = var.asso_name
   runtime    = "java"
 
   entrypoint {
@@ -10,7 +9,7 @@ resource "google_app_engine_flexible_app_version" "myapp_v1" {
 
   deployment {
     zip {
-      source_url = "https://storage.googleapis.com/${google_storage_bucket.bucket.name}/${google_storage_bucket_object.object.name}"
+      source_url = "https://storage.googleapis.com/${google_storage_bucket.back.name}/${google_storage_bucket_object.back.name}"
     }
   }
 
@@ -24,11 +23,11 @@ resource "google_app_engine_flexible_app_version" "myapp_v1" {
   }
 
   liveness_check {
-    path = "/api/books"
+    path = "/api/hello"
   }
 
   readiness_check {
-    path = "/api/books"
+    path = "/api/hello"
   }
 
   manual_scaling {
@@ -48,18 +47,19 @@ resource "google_app_engine_flexible_app_version" "myapp_v1" {
 
   env_variables = {
     SPRING_PROFILES_ACTIVE = "gcp,mysql"
+    database_name = google_sql_database.asso.name
   }
   delete_service_on_destroy = true
 }
 
-resource "google_storage_bucket" "bucket" {
+resource "google_storage_bucket" "back" {
   name     = "flixbee-appengine-static-content"
   location = "US"
 }
 
-resource "google_storage_bucket_object" "object" {
+resource "google_storage_bucket_object" "back" {
   name   = "test.zip"
-  bucket = google_storage_bucket.bucket.name
-  source = "./test.zip"
+  bucket = google_storage_bucket.back.name
+  source = "./back.zip"
 }
 
