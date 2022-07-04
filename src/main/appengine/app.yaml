@@ -17,4 +17,4 @@ resources:
     size_gb: 0.5
 manual_scaling:
   instances: 1
-service: dev
+service: dev2
